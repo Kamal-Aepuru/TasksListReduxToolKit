@@ -1,14 +1,15 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { tasksButtonPressed } from "./tasksSlice";
 
 const Tasks = () => {
   const tasks = useSelector((state) => state.tasks);
+  const dispatch = useDispatch();
   const tasksFirstDate = tasks.tasks.filter(
     (task) => task.date === "15/07/2024"
   );
   const tasksSecondDate = tasks.tasks.filter(
     (task) => task.date === "16/07/2024"
   );
-  console.log(tasksSecondDate);
 
   return (
     <>
@@ -16,12 +17,14 @@ const Tasks = () => {
       {tasksFirstDate.length > 0 ? (
         <ul>
           {tasksFirstDate.map((task) => (
-             <li key={task.id}>
-             <p>
-               <strong>{task.name}</strong>
-             </p>
-             <p>Status: {task.status}</p>
-           </li>
+            <li key={task.id}>
+              <p>
+                <strong>{task.name}</strong>
+              </p>
+              <button onClick={() => dispatch(tasksButtonPressed(task.id))}>
+                {task.status}
+              </button>
+            </li>
           ))}
         </ul>
       ) : (
@@ -35,7 +38,9 @@ const Tasks = () => {
               <p>
                 <strong>{task.name}</strong>
               </p>
-              <p>Status: {task.status}</p>
+              <button onClick={() => dispatch(tasksButtonPressed(task.id))}>
+                {task.status}
+              </button>
             </li>
           ))}
         </ul>
