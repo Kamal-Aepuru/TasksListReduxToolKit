@@ -1,28 +1,32 @@
 import { useSelector, useDispatch } from "react-redux";
-import { tasksButtonPressed } from "./tasksSlice";
+import { tasksButtonPressed, fetchTasks } from "./tasksSlice";
+import { useEffect } from "react";
 
 const Tasks = () => {
-  const tasks = useSelector((state) => state.tasks);
+  const { tasksList, status, error } = useSelector((state) => state.tasks);
+  console.log(tasksList);
   const dispatch = useDispatch();
-  const tasksFirstDate = tasks.tasks.filter(
-    (task) => task.date === "15/07/2024"
-  );
-  const tasksSecondDate = tasks.tasks.filter(
-    (task) => task.date === "16/07/2024"
-  );
+
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
   return (
     <>
+      {status === "loading" && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+
+      {/* Tasks for 15/07/2024 */}
       <h1>15/07/2024</h1>
-      {tasksFirstDate.length > 0 ? (
+      {tasksList.length > 0 && tasksList[0]?.tasks?.length > 0 ? (
         <ul>
-          {tasksFirstDate.map((task) => (
-            <li key={task.id}>
+          {tasksList[0].tasks.map((task) => (
+            <li key={task.taskId}>
               <p>
-                <strong>{task.name}</strong>
+                <strong>{task.task}</strong>
               </p>
-              <button onClick={() => dispatch(tasksButtonPressed(task.id))}>
-                {task.status}
+              <button onClick={() => dispatch(tasksButtonPressed(task.taskId))}>
+                {task.taskStatus}
               </button>
             </li>
           ))}
@@ -30,16 +34,18 @@ const Tasks = () => {
       ) : (
         <p>No tasks for this date.</p>
       )}
+
+      {/* Tasks for 16/07/2024 */}
       <h2>16/07/2024</h2>
-      {tasksSecondDate.length > 0 ? (
+      {tasksList.length > 1 && tasksList[1]?.tasks?.length > 0 ? (
         <ul>
-          {tasksSecondDate.map((task) => (
-            <li key={task.id}>
+          {tasksList[1].tasks.map((task) => (
+            <li key={task.taskId}>
               <p>
-                <strong>{task.name}</strong>
+                <strong>{task.task}</strong>
               </p>
-              <button onClick={() => dispatch(tasksButtonPressed(task.id))}>
-                {task.status}
+              <button onClick={() => dispatch(tasksButtonPressed(task.taskId))}>
+                {task.taskStatus}
               </button>
             </li>
           ))}
@@ -50,4 +56,5 @@ const Tasks = () => {
     </>
   );
 };
+
 export default Tasks;
